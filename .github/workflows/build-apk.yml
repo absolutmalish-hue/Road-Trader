@@ -29,7 +29,15 @@ jobs:
           npx cap init "Road Trader" com.roadtrader.game --web-dir www
           npx cap add android
 
-      - name: Patch manifest (vibration, portrait only)
-        run: |
-          M=android/app/src/main/AndroidManifest.xml
-          sed -i 's#<application#<uses-permission android:name="android.permission.VIBRATE" />\n
+      - name: Sync web files
+        run: npx cap sync android
+
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: RoadTrader-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
